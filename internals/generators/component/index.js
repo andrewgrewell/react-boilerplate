@@ -7,6 +7,8 @@
 'use strict';
 
 const componentExists = require('../utils/componentExists');
+const fs = require('fs');
+const chalk = require('chalk');
 
 module.exports = {
   description: 'Add an unconnected component',
@@ -66,6 +68,12 @@ module.exports = {
       path: '../../app/components/{{properCase name}}/tests/index.test.js',
       templateFile: './component/test.js.hbs',
       abortOnFail: true,
+    }, function(answers) {
+        var componentName = answers.name;
+        var exportString = `export { default as ${componentName} } from './${componentName}; \n`;
+        fs.appendFileSync('../../app/components/index.js', exportString);
+
+        return chalk.white(`add ${componentName} export to components/index.js`);
     }];
 
     // If they want a i18n messages file
